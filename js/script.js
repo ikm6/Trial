@@ -1,3 +1,7 @@
+require('dotenv').config();
+
+
+
 console.log("script.js is connected");
 
 const form = document.getElementById("fridgeForm");
@@ -15,7 +19,7 @@ const hasIngredientsNoButton = document.getElementById("hasIngredientsNo");
 const shoppingListBox = document.getElementById("shoppingListBox");
 const shoppingListItems = document.getElementById("shoppingListItems");
 
-const API_KEY = "AIzaSyB4qzXpxoFAqJ7Lkk-A-wgzSJ6yVzjsoVg";
+const API_KEY =  process.env.API_KEY;
 
 let latestRecipeText = "";
 

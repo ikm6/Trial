@@ -1,14 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HTML CSS JS Boilerplate</title>
-    <link rel="stylesheet" href="css/styles.css" />
-  </head>
-  <body>
-    <div id="app"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S&S | Struggle & Scran</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
 
-    <script type="module" src="js/script.js"></script>
-  </body>
+<body>
+  <header class="home-navbar">
+  <div class="nav-logo">
+    <img src="components/logo.png" alt="Struggle & Scran logo" />
+    <span>S&S</span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="form.html">Send a Shelfie!</a>
+    <a href="shopping.html">Shopping List</a>
+    <a href="groceries.html">Find Groceries</a>
+  </nav>
+
+  <div class="settings-wrapper">
+    <button id="settingsButton" class="settings-button" type="button">
+      <span class="settings-icon">⚙️</span>
+      <span>Settings</span>
+    </button>
+
+    <div id="settingsMenu" class="settings-menu hidden">
+      <button id="themeToggle" type="button">Toggle Dark / Light Mode</button>
+      <button id="speakButton" type="button">Read Page Aloud</button>
+      <button id="stopSpeakButton" type="button">Stop Voice</button>
+    </div>
+  </div>
+</header>
+
+  <main class="home-page">
+    <section class="hero-section">
+      <div class="hero-text">
+        <p class="small-label">student meals from fridge chaos</p>
+
+        <h1>Struggling for scran?</h1>
+
+        <p class="hero-description">
+          Are you a uni student staring into your fridge like it owes you money?
+          Send us a <strong>shelfie</strong> — a pic of your fridge shelf — and
+          S&S will help turn whatever survived in there into an easy, cheap recipe.
+        </p>
+
+        <p class="hero-description">
+          Whether you’ve got pasta, one egg, half a pepper, or a suspicious block of cheese,
+          Struggle & Scran helps you waste less, spend less, and eat better.
+        </p>
+
+        <div class="hero-buttons">
+          <a class="main-button" href="form.html">Send a Shelfie!</a>
+          <a class="secondary-button" href="groceries.html">Find Groceries</a>
+        </div>
+      </div>
+
+      <div class="hero-image-card">
+        <img src="components/logo.png" alt="Struggle & Scran logo large" />
+      </div>
+    </section>
+
+    <section class="info-section">
+      <div class="info-card">
+        <h2>📸 1. Send a shelfie</h2>
+        <p>
+          Upload a photo of what’s in your fridge or type the ingredients you have.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h2>🤖 2. Get a recipe</h2>
+        <p>
+          Our AI suggests a student-friendly recipe based on your food, diet, and cooking time.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h2>🛒 3. Shop smarter</h2>
+        <p>
+          Missing something? Build a shopping list and find grocery options nearby.
+        </p>
+      </div>
+    </section>
+
+    <section class="about-section" id="aboutText">
+      <h2>What is Struggle & Scran?</h2>
+      <p>
+        Struggle & Scran is a student food helper for people who are hungry,
+        broke, busy, or all three. Instead of buying random ingredients and
+        wasting food, you use what you already have.
+      </p>
+
+      <p>
+        The goal is simple: upload your shelfie, choose your diet and cooking time,
+        and get a recipe that actually makes sense for student life.
+      </p>
+    </section>
+  </main>
+
+  <script defer src="js/home.js"></script>
+</body>
 </html>

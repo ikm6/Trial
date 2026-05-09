@@ -1,19 +1,250 @@
-import { createHeader } from '../components/header.js';
-import { createFooter } from '../components/footer.js';
-import { createCard } from '../components/card.js';
+console.log("script.js is connected");
 
-const app = document.getElementById('app');
+const form = document.getElementById("fridgeForm");
+const recipeResult = document.getElementById("recipeResult");
+const loadingMessage = document.getElementById("loadingMessage");
 
-app.appendChild(createHeader());
+const recipeActions = document.getElementById("recipeActions");
+const acceptRecipeButton = document.getElementById("acceptRecipe");
+const rejectRecipeButton = document.getElementById("rejectRecipe");
 
-const main = document.createElement('main');
-main.appendChild(
-  createCard({
-    title: 'Welcome',
-    text: 'This is a simple HTML, CSS, and JavaScript starter project with component-based structure.',
-    buttonText: 'Learn more',
-  })
-);
+const ingredientQuestion = document.getElementById("ingredientQuestion");
+const hasIngredientsYesButton = document.getElementById("hasIngredientsYes");
+const hasIngredientsNoButton = document.getElementById("hasIngredientsNo");
 
-app.appendChild(main);
-app.appendChild(createFooter());
+const shoppingListBox = document.getElementById("shoppingListBox");
+const shoppingListItems = document.getElementById("shoppingListItems");
+
+const API_KEY = "AIzaSyBQYiYigRbon8vpvHEqa7LANJsQk1rI8PI";
+
+let latestRecipeText = "";
+
+function fileToBase64(file) {
+  return new Promise(function (resolve, reject) {
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      const base64String = reader.result.split(",")[1];
+      resolve(base64String);
+    };
+
+    reader.onerror = function () {
+      reject(new Error("Could not read image file"));
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+async function generateRecipe(makeDifferentRecipe = false) {
+  const ingredients = document.getElementById("ingredients").value;
+  const time = document.getElementById("time").value;
+  const diet = document.getElementById("diet").value;
+  const imageInput = document.getElementById("fridgeImage");
+  const imageFile = imageInput.files[0];
+
+  if (!ingredients.trim() && !imageFile) {
+    recipeResult.textContent = "Send us your shelfie or type what you have first.";
+    return;
+  }
+
+  const prompt = `
+You are Struggle & Scran, a funny but helpful student cooking assistant.
+
+The user may upload a photo of their fridge/shelfie. First, identify visible food ingredients from the image. If you are unsure about anything, say you are unsure. Do not make up ingredients.
+
+The user also typed these ingredients:
+${ingredients || "No typed ingredients provided"}
+
+Their available cooking time is:
+${time}
+
+Their dietary preference is:
+${diet}
+
+${
+  makeDifferentRecipe
+    ? "The user rejected the first recipe. Generate a DIFFERENT recipe idea using the same inputs. Do not repeat the same recipe name or same main idea."
+    : ""
+}
+
+Create a cheap, student-friendly recipe.
+
+Format the response exactly like this:
+
+Detected ingredients from shelfie:
+Typed ingredients:
+Recipe name:
+Short description:
+Ingredients used:
+Shopping list:
+Cooking time:
+Dietary match:
+Steps:
+Student survival tip:
+
+Rules:
+- Use mostly the ingredients visible in the image or typed by the user.
+- Do not include ingredients that break their dietary preference.
+- If the user is vegan, do not include meat, fish, eggs, milk, cheese, butter, yogurt, or honey.
+- If the user is vegetarian, do not include meat or fish.
+- If the user is pescatarian, fish is okay, but meat is not.
+- If the user is gluten free, avoid wheat, normal pasta, bread, flour, and gluten-containing foods.
+- If the user is dairy free, avoid milk, cheese, butter, yogurt, and cream.
+- Match the cooking time as closely as possible.
+- Keep it cheap and realistic for university students.
+- In the Shopping list section, only include ingredients the user may need to buy.
+- If nothing needs buying, write: Nothing needed.
+- Make it funny but still useful.
+- Give clear numbered steps.
+- If the image is unclear, be honest about what you cannot identify.
+`;
+
+  try {
+    loadingMessage.classList.remove("hidden");
+    recipeActions.classList.add("hidden");
+    ingredientQuestion.classList.add("hidden");
+    shoppingListBox.classList.add("hidden");
+
+    recipeResult.textContent = makeDifferentRecipe
+      ? "Finding a less tragic alternative..."
+      : "Scanning your shelfie...";
+
+    const parts = [
+      {
+        text: prompt
+      }
+    ];
+
+    if (imageFile) {
+      const base64Image = await fileToBase64(imageFile);
+
+      parts.push({
+        inline_data: {
+          mime_type: imageFile.type,
+          data: base64Image
+        }
+      });
+    }
+
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": API_KEY
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: parts
+            }
+          ]
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("Gemini response:", data);
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || "Something went wrong with Gemini");
+    }
+
+    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!aiText) {
+      throw new Error("Gemini did not return a recipe.");
+    }
+
+    latestRecipeText = aiText;
+    recipeResult.textContent = aiText;
+    recipeActions.classList.remove("hidden");
+  } catch (error) {
+    console.error("Error:", error);
+
+    recipeResult.textContent =
+      "Oops, the fridge goblin failed. Error: " + error.message;
+  } finally {
+    loadingMessage.classList.add("hidden");
+  }
+}
+
+function extractShoppingList(recipeText) {
+  const match = recipeText.match(
+    /Shopping list:\s*([\s\S]*?)(Cooking time:|Dietary match:|Steps:|Student survival tip:|$)/i
+  );
+
+  if (!match || !match[1].trim()) {
+    return ["No shopping list found."];
+  }
+
+  const shoppingText = match[1].trim();
+
+  if (shoppingText.toLowerCase().includes("nothing needed")) {
+    return ["Nothing needed. You are somehow prepared. Suspicious, but impressive."];
+  }
+
+  return shoppingText
+    .split(/\n|,|-/)
+    .map(function (item) {
+      return item.trim();
+    })
+    .filter(function (item) {
+      return item.length > 0;
+    });
+}
+
+if (form) {
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    generateRecipe(false);
+  });
+} else {
+  console.error("Could not find the form. Check that form.html has id='fridgeForm'.");
+}
+
+if (rejectRecipeButton) {
+  rejectRecipeButton.addEventListener("click", function () {
+    generateRecipe(true);
+  });
+}
+
+if (acceptRecipeButton) {
+  acceptRecipeButton.addEventListener("click", function () {
+    ingredientQuestion.classList.remove("hidden");
+    shoppingListBox.classList.add("hidden");
+  });
+}
+
+if (acceptRecipeButton) {
+  acceptRecipeButton.addEventListener("click", function () {
+    recipeActions.classList.add("hidden");
+    ingredientQuestion.classList.remove("hidden");
+    shoppingListBox.classList.add("hidden");
+  });
+}
+
+if (hasIngredientsNoButton) {
+  hasIngredientsNoButton.addEventListener("click", function () {
+    recipeActions.classList.add("hidden");
+    ingredientQuestion.classList.add("hidden");
+
+    const items = extractShoppingList(latestRecipeText);
+
+    // Save the list so the shopping-list.html page can use it
+    localStorage.setItem("shoppingList", JSON.stringify(items));
+
+    shoppingListItems.innerHTML = "";
+
+    items.forEach(function (item) {
+      const li = document.createElement("li");
+      li.textContent = item;
+      shoppingListItems.appendChild(li);
+    });
+
+    shoppingListBox.classList.remove("hidden");
+  });
+}

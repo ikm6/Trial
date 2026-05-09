@@ -1,14 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HTML CSS JS Boilerplate</title>
-    <link rel="stylesheet" href="css/styles.css" />
-  </head>
-  <body>
-    <div id="app"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Send a Shelfie | Struggle & Scran</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
 
-    <script type="module" src="js/script.js"></script>
-  </body>
+<body>
+  <header class="home-navbar">
+    <div class="nav-logo">
+      <img src="components/logo.png" alt="Struggle & Scran logo" />
+      <span>S&S</span>
+    </div>
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="form.html">Send a Shelfie!</a>
+      <a href="shopping.html">Shopping List</a>
+      <a href="groceries.html">Find Groceries</a>
+    </nav>
+
+    <div class="settings-wrapper">
+      <button id="settingsButton" class="settings-button" type="button">
+        <span class="settings-icon">⚙️</span>
+        <span>Settings</span>
+      </button>
+
+      <div id="settingsMenu" class="settings-menu hidden">
+        <button id="themeToggle" type="button">Toggle Dark / Light Mode</button>
+        <button id="speakButton" type="button">Read Page Aloud</button>
+        <button id="stopSpeakButton" type="button">Stop Voice</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="form-page">
+    <section class="form-card">
+      <h1>Send us your shelfie!</h1>
+      <p>
+        Upload a pic of your fridge shelf, or type in what you have.
+        We’ll turn your food chaos into actual scran.
+      </p>
+
+      <form id="fridgeForm">
+        <label for="fridgeImage">Upload your shelfie</label>
+        <input type="file" id="fridgeImage" accept="image/*" />
+
+        <div class="or-divider">
+          <span>OR</span>
+        </div>
+
+        <label for="ingredients">Type in what you have</label>
+        <textarea
+          id="ingredients"
+          placeholder="Example: pasta, cheese, eggs, spinach, tomato, one sad carrot"
+        ></textarea>
+
+        <label for="time">How long can you be bothered to cook?</label>
+        <select id="time">
+          <option value="10-15 minutes">10-15 mins</option>
+          <option value="15-45 minutes">15-45 mins</option>
+          <option value="1 hour or more">1 hour+</option>
+        </select>
+
+        <label for="diet">Dietary preference</label>
+        <select id="diet">
+          <option value="No preference">No preference</option>
+          <option value="Vegan">Vegan</option>
+          <option value="Vegetarian">Vegetarian</option>
+          <option value="Pescatarian">Pescatarian</option>
+          <option value="Gluten free">Gluten free</option>
+          <option value="Dairy free">Dairy free</option>
+        </select>
+
+        <button type="submit">Generate my scran</button>
+      </form>
+    </section>
+
+    <section class="result-card">
+      <h2>Your AI Recipe</h2>
+
+      <div id="loadingMessage" class="hidden">
+        Scanning your shelfie...
+      </div>
+
+      <div id="recipeResult">
+        Your recipe will appear here after you upload a shelfie or type your ingredients.
+      </div>
+
+      <div id="recipeActions" class="hidden">
+        <button id="acceptRecipe" type="button">Accept recipe</button>
+        <button id="rejectRecipe" type="button">Reject recipe, try again</button>
+      </div>
+
+      <div id="ingredientQuestion" class="hidden">
+        <h3>Do you already have everything you need?</h3>
+        <button id="hasIngredientsYes" type="button">Yes, I’m ready to cook</button>
+        <button id="hasIngredientsNo" type="button">No, show my shopping list</button>
+      </div>
+
+      <div id="shoppingListBox" class="hidden">
+        <h3>Stuff you need to buy</h3>
+        <ul id="shoppingListItems"></ul>
+
+        <a class="button-link" href="shopping.html">
+          Open full shopping list
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script defer src="js/script.js"></script>
+  <script defer src="js/home.js"></script>
+</body>
 </html>

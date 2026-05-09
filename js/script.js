@@ -15,7 +15,7 @@ const hasIngredientsNoButton = document.getElementById("hasIngredientsNo");
 const shoppingListBox = document.getElementById("shoppingListBox");
 const shoppingListItems = document.getElementById("shoppingListItems");
 
-const API_KEY = "AIzaSyB4qzXpxoFAqJ7Lkk-A-wgzSJ6yVzjsoVg";
+const API_KEY = "AIzaSyBQYiYigRbon8vpvHEqa7LANJsQk1rI8PI";
 
 let latestRecipeText = "";
 

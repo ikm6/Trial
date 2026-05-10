@@ -656,4 +656,180 @@ body.dark-mode .settings-button {
     right: 50%;
     transform: translateX(50%);
   }
+  .groceries-page {
+  padding: 45px 60px 70px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 30px;
+}
+
+.groceries-card {
+  background: #fffdf4;
+  border: 3px solid #d8c88f;
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 8px 8px 0 #e8efbd;
+}
+
+.groceries-card h1 {
+  font-size: 48px;
+  line-height: 1;
+  margin: 10px 0 18px;
+  color: #122b18;
+}
+
+.groceries-card h2 {
+  margin-top: 0;
+  color: #122b18;
+}
+
+.groceries-card p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #31421f;
+}
+
+.grocery-search-form {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.grocery-search-form input {
+  flex: 1;
+  padding: 16px;
+  border: 2px solid #d8c88f;
+  border-radius: 14px;
+  font-size: 16px;
+  background: white;
+  color: #122b18;
+}
+
+.grocery-search-form button {
+  padding: 0 22px;
+  border: none;
+  border-radius: 14px;
+  background: #53742d;
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.grocery-search-form button:hover {
+  background: #3f5a22;
+}
+
+.demo-note {
+  margin-top: 18px;
+  font-size: 14px !important;
+  color: #6f6a4a !important;
+}
+
+.grocery-status {
+  padding: 30px 0;
+  color: #6f6a4a;
+}
+
+.grocery-results {
+  display: grid;
+  gap: 14px;
+}
+
+.grocery-result-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  background: white;
+  border: 2px solid #d8c88f;
+  border-radius: 18px;
+}
+
+.grocery-result-card h3 {
+  margin: 0 0 6px;
+  color: #122b18;
+}
+
+.grocery-result-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #31421f;
+}
+
+.grocery-result-card strong {
+  font-size: 22px;
+  color: #53742d;
+}
+
+.home-navbar .nav-logo img {
+  width: 76px;
+  max-width: 76px;
+  height: auto;
+  border-radius: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 850px) {
+  .groceries-page {
+    grid-template-columns: 1fr;
+    padding: 30px 22px;
+  }
+
+  .grocery-search-form {
+    flex-direction: column;
+  }
+
+  .grocery-search-form button {
+    padding: 15px;
+  }
+}
+#searchForm {
+  position: relative;
+}
+
+#searchForm input {
+  width: 100%;
+  padding-right: 130px;
+  color: #1a1a1a;
+  background: white;
+}
+
+#searchForm button {
+  width: auto;
+  margin-top: 0;
+}
+#searchForm {
+  position: relative;
+}
+
+#searchForm input#query {
+  display: block;
+  width: 100%;
+  padding-left: 24px !important;
+  padding-right: 150px !important;
+  background: white !important;
+  color: #1a1a1a !important;
+  position: relative;
+  z-index: 1;
+}
+
+#searchForm button#submitBtn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: auto !important;
+  max-width: 120px;
+  margin: 0 !important;
+  padding-left: 24px;
+  padding-right: 24px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 }

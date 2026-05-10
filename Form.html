@@ -9,32 +9,30 @@
 
 <body>
   <header class="home-navbar">
-    <div class="nav-logo">
-      <img src="components/logo.png" alt="Struggle & Scran logo" />
-      <span>S&S</span>
+  <div class="nav-logo">
+    <img src="components/logo.png" alt="Struggle & Scran logo" />
+    <span>S&S</span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="form.html">Send a Shelfie!</a>
+    <a href="groceries.html">Shopping List & Groceries</a>
+  </nav>
+
+  <div class="settings-wrapper">
+    <button id="settingsButton" class="settings-button" type="button">
+      <span class="settings-icon">⚙️</span>
+      <span>Settings</span>
+    </button>
+
+    <div id="settingsMenu" class="settings-menu hidden">
+      <button id="themeToggle" type="button">Toggle Dark / Light Mode</button>
+      <button id="speakButton" type="button">Read Page Aloud</button>
+      <button id="stopSpeakButton" type="button">Stop Voice</button>
     </div>
-
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="form.html">Send a Shelfie!</a>
-      <a href="shopping.html">Shopping List</a>
-      <a href="groceries.html">Find Groceries</a>
-    </nav>
-
-    <div class="settings-wrapper">
-      <button id="settingsButton" class="settings-button" type="button">
-        <span class="settings-icon">⚙️</span>
-        <span>Settings</span>
-      </button>
-
-      <div id="settingsMenu" class="settings-menu hidden">
-        <button id="themeToggle" type="button">Toggle Dark / Light Mode</button>
-        <button id="speakButton" type="button">Read Page Aloud</button>
-        <button id="stopSpeakButton" type="button">Stop Voice</button>
-      </div>
-    </div>
-  </header>
-
+  </div>
+</header>
   <main class="form-page">
     <section class="form-card">
       <h1>Send us your shelfie!</h1>

@@ -15,7 +15,7 @@ const hasIngredientsNoButton = document.getElementById("hasIngredientsNo");
 const shoppingListBox = document.getElementById("shoppingListBox");
 const shoppingListItems = document.getElementById("shoppingListItems");
 
-const API_KEY = "AIzaSyBQYiYigRbon8vpvHEqa7LANJsQk1rI8PI";
+const API_KEY = "AIzaSyBQYiYigRbon8vpvHEqa7LANJsQk1rI8PI"; // Replace with your actual API key
 
 let latestRecipeText = "";
 
@@ -72,12 +72,10 @@ Create a cheap, student-friendly recipe.
 
 Format the response exactly like this:
 
-Detected ingredients from shelfie:
-Typed ingredients:
+Ingredients you have:
+Ingredients you need to buy:
 Recipe name:
 Short description:
-Ingredients used:
-Shopping list:
 Cooking time:
 Dietary match:
 Steps:
@@ -93,11 +91,13 @@ Rules:
 - If the user is dairy free, avoid milk, cheese, butter, yogurt, and cream.
 - Match the cooking time as closely as possible.
 - Keep it cheap and realistic for university students.
-- In the Shopping list section, only include ingredients the user may need to buy.
+- Do not assume the user has any ingredients except the ones they show in the image or type in. If you are unsure if they have an ingredient, assume they do not have it, and add it to the shopping list
+-- In the Ingredients you need to buy section, only include ingredients the user may need to buy.
 - If nothing needs buying, write: Nothing needed.
 - Make it funny but still useful.
 - Give clear numbered steps.
 - If the image is unclear, be honest about what you cannot identify.
+- Make the instructions very brief and short sentences, not very long.
 `;
 
   try {
@@ -174,7 +174,7 @@ Rules:
 
 function extractShoppingList(recipeText) {
   const match = recipeText.match(
-    /Shopping list:\s*([\s\S]*?)(Cooking time:|Dietary match:|Steps:|Student survival tip:|$)/i
+    /Ingredients you need to buy:\s*([\s\S]*?)(Recipe name:|Short description:|Cooking time:|Dietary match:|Steps:|Student survival tip:|$)/i
   );
 
   if (!match || !match[1].trim()) {
@@ -190,7 +190,10 @@ function extractShoppingList(recipeText) {
   return shoppingText
     .split(/\n|,|-/)
     .map(function (item) {
-      return item.trim();
+      return item
+        .replace(/^\*+/, "")
+        .replace(/^\d+\./, "")
+        .trim();
     })
     .filter(function (item) {
       return item.length > 0;
@@ -214,13 +217,6 @@ if (rejectRecipeButton) {
 
 if (acceptRecipeButton) {
   acceptRecipeButton.addEventListener("click", function () {
-    ingredientQuestion.classList.remove("hidden");
-    shoppingListBox.classList.add("hidden");
-  });
-}
-
-if (acceptRecipeButton) {
-  acceptRecipeButton.addEventListener("click", function () {
     recipeActions.classList.add("hidden");
     ingredientQuestion.classList.remove("hidden");
     shoppingListBox.classList.add("hidden");
@@ -229,22 +225,10 @@ if (acceptRecipeButton) {
 
 if (hasIngredientsNoButton) {
   hasIngredientsNoButton.addEventListener("click", function () {
-    recipeActions.classList.add("hidden");
-    ingredientQuestion.classList.add("hidden");
-
     const items = extractShoppingList(latestRecipeText);
 
-    // Save the list so the shopping-list.html page can use it
     localStorage.setItem("shoppingList", JSON.stringify(items));
 
-    shoppingListItems.innerHTML = "";
-
-    items.forEach(function (item) {
-      const li = document.createElement("li");
-      li.textContent = item;
-      shoppingListItems.appendChild(li);
-    });
-
-    shoppingListBox.classList.remove("hidden");
+    window.location.href = "groceries.html";
   });
 }

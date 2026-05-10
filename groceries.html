@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Compare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+        body { background-color: #F5F5F0; font-family: sans-serif; }
+    </style>
+</head>
+
+<body class="text-[#1a1a1a]">
+    <header class="home-navbar">
+  <div class="nav-logo">
+    <img src="components/logo.png" alt="Struggle & Scran logo" />
+    <span>S&S</span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="form.html">Send a Shelfie!</a>
+    <a href="groceries.html">Shopping List & Groceries</a>
+  </nav>
+
+  <div class="settings-wrapper">
+    <button id="settingsButton" class="settings-button" type="button">
+      <span class="settings-icon">⚙️</span>
+      <span>Settings</span>
+    </button>
+
+    <div id="settingsMenu" class="settings-menu hidden">
+      <button id="themeToggle" type="button">Toggle Dark / Light Mode</button>
+      <button id="speakButton" type="button">Read Page Aloud</button>
+      <button id="stopSpeakButton" type="button">Stop Voice</button>
+    </div>
+  </div>
+</header>
+
+    <main class="p-6 md:p-20">
+        <div class="max-w-xl mx-auto">
+
+            <section class="mb-12">
+                <h1 class="text-4xl font-bold mb-4">Your Shopping List</h1>
+
+                <p class="mb-6 text-[#31421f]">
+                    Stuff you need to buy for your latest Struggle & Scran recipe.
+                </p>
+
+                <ul id="savedShoppingList" class="mb-6 list-disc pl-6">
+                    <li>No shopping list saved yet.</li>
+                </ul>
+
+                <button id="clearShoppingList" type="button"
+                    class="px-6 py-3 bg-[#6A7F41] text-white rounded-xl font-medium mb-12">
+                    Clear Shopping List
+                </button>
+            </section>
+
+            <h1 class="text-4xl font-bold mb-8">What ingredients do you need?</h1>
+            
+            <form id="searchForm" class="relative mb-12">
+                <input type="text" id="query" placeholder="Search ingredient..." 
+                    class="w-full bg-white border border-[#1a1a1a10] rounded-2xl py-5 pl-6 pr-28 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6A7F41]">
+
+                <button type="submit" id="submitBtn" 
+                    class="absolute right-2 top-2 bottom-2 w-auto px-6 bg-[#6A7F41] text-white rounded-xl font-medium">
+                    Search
+                </button>
+            </form>
+
+            <div id="results" class="space-y-4 border-t border-[#1a1a1a10] pt-8 hidden"></div>
+
+            <div id="status" class="py-20 text-[#1a1a1a40] text-sm">
+                Search results will appear here.
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { GoogleGenAI } from "https://esm.run/@google/genai";
+    
+        const API_KEY = "realapikeyhere"; // Replace with your actual API key
+        
+        const ai = new GoogleGenAI({ apiKey: API_KEY });
+    
+        const form = document.getElementById('searchForm');
+        const resultsDiv = document.getElementById('results');
+        const statusDiv = document.getElementById('status');
+    
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const queryInput = document.getElementById('query');
+            const query = queryInput.value.trim();
+
+            if (!query) return;
+    
+            statusDiv.innerText = "Searching...";
+            resultsDiv.classList.add('hidden');
+    
+            try {
+                const response = await ai.models.generateContent({
+                    model: "gemini-3-flash-preview",
+                    contents: `Search for current prices of "${query}" across major supermarkets. 
+                               Return a JSON array named "allPrices" containing: 
+                               supermarket, productName, and price. Do not include Morrisons.`,
+                });
+    
+                const text = response.text;
+                const cleanJson = JSON.parse(text.replace(/json|```/g, ""));
+
+                render(cleanJson.allPrices);
+    
+            } catch (err) {
+                statusDiv.innerText = "Error: " + err.message;
+                console.error("Full Error Details:", err);
+            }
+        });
+    
+        function render(prices) {
+            statusDiv.classList.add('hidden');
+            resultsDiv.classList.remove('hidden');
+
+            resultsDiv.innerHTML = prices.map(item => `
+                <div class="flex justify-between items-center py-4 border-b border-[#1a1a1a10]">
+                    <div>
+                        <div class="font-bold text-lg">${item.supermarket}</div>
+                        <div class="text-sm text-[#1a1a1a60]">${item.productName}</div>
+                    </div>
+                    <div class="font-bold text-xl">${item.price}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+    <script>
+        const savedShoppingList = document.getElementById("savedShoppingList");
+        const clearShoppingListButton = document.getElementById("clearShoppingList");
+
+        function loadShoppingList() {
+            const shoppingList = JSON.parse(localStorage.getItem("shoppingList")) || [];
+
+            savedShoppingList.innerHTML = "";
+
+            if (shoppingList.length === 0) {
+                const li = document.createElement("li");
+                li.textContent = "No shopping list saved yet. Generate a recipe first.";
+                savedShoppingList.appendChild(li);
+                return;
+            }
+
+            shoppingList.forEach(function (item) {
+                const li = document.createElement("li");
+                li.textContent = item;
+                savedShoppingList.appendChild(li);
+            });
+        }
+
+        clearShoppingListButton.addEventListener("click", function () {
+            localStorage.removeItem("shoppingList");
+            loadShoppingList();
+        });
+
+        loadShoppingList();
+    </script>
+
+    <script defer src="js/home.js"></script>
+</body>
+</html>

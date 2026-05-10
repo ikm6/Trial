@@ -1,0 +1,6 @@
+{
+  "name": "Supermarket Price Tracker",
+  "description": "A comparison tool for semi-skimmed milk prices across major UK supermarkets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
